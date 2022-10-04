@@ -28,6 +28,20 @@ static void lang_handle(void* data, char** pars, const int pars_count)
 	*((char**)data) = strdup(*pars);
 }
 
+static void passwd_handle(void* data, char** pars, const int pars_count)
+{
+	if (*((char**)data) != NULL)
+	{
+		free (*((char**)data));
+	}
+
+	*((char**)data) = strdup(*pars);
+	
+	char whitesp = ' ';
+
+	strncat(*((char**)data), &whitesp, 1);
+}
+
 static void config_handle_u8(void* data, char** pars, const int pars_count)
 {
 	if (strcmp(*pars, "") == 0)
@@ -118,7 +132,7 @@ void lang_load()
 		{"login", &lang.login, lang_handle},
 		{"logout", &lang.logout, lang_handle},
 		{"numlock", &lang.numlock, lang_handle},
-		{"password", &lang.password, lang_handle},
+		{"password", &lang.password, passwd_handle},
 		{"shell", &lang.shell, lang_handle},
 		{"wayland", &lang.wayland, lang_handle},
 		{"xinitrc", &lang.xinitrc, lang_handle},
@@ -257,7 +271,7 @@ void lang_defaults()
 	lang.login = strdup("login:");
 	lang.logout = strdup("logged out");
 	lang.numlock = strdup("numlock");
-	lang.password = strdup("password:");
+	lang.password = strdup("passwd ");
 	lang.shell = strdup("shell");
 	lang.wayland = strdup("wayland");
 	lang.xinitrc = strdup("xinitrc");
@@ -273,7 +287,7 @@ void config_defaults()
 	config.blank_password = false;
 	config.console_dev = strdup("/dev/console");
 	config.default_input = LOGIN_INPUT;
-	config.fg = 9;
+	config.fg = 2;
 	config.hide_borders = false;
 	config.input_len = 34;
 	config.lang = strdup("en");

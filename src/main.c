@@ -135,6 +135,8 @@ int main(int argc, char** argv)
 	// init visible elements
 	struct tb_event event;
 	struct term_buf buf;
+
+	buf.info_line = "< SYSTEM REBOOTING >";
 	
 	//Place the curser on the login field if there is no saved username, if there is, place the curser on the password field
 	uint8_t active_input;
@@ -190,12 +192,12 @@ int main(int argc, char** argv)
 				draw_box(&buf);
 				draw_labels(&buf);
 				if(!config.hide_f1_commands)
-					draw_f_commands();
+					draw_f_commands(&buf);
 				draw_lock_state(&buf);
 				position_input(&buf, &desktop, &login, &password);
 				draw_desktop(&desktop);
 				draw_input(&login);
-				draw_input_mask(&password);
+				draw_input_mask(&password, &buf);
 				update = config.animate;
 			}
 			else
@@ -312,6 +314,7 @@ int main(int argc, char** argv)
 	input_text_free(&login);
 	input_text_free(&password);
 	free_hostname();
+	free_uname();
 
 	// unload config
 	draw_free(&buf);

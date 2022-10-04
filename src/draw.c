@@ -28,7 +28,8 @@ void draw_init(struct term_buf* buf)
 {
 	buf->width = tb_width();
 	buf->height = tb_height();
-	hostname(&buf->info_line);
+	//hostname(&buf->info_line);
+	get_uname(&buf->uname);
 
 	uint16_t len_login = strlen(lang.login);
 	uint16_t len_password = strlen(lang.password);
@@ -271,8 +272,20 @@ void draw_labels(struct term_buf* buf) // throws
 	}
 }
 
-void draw_f_commands()
+void draw_f_commands(struct term_buf* buf)
 {
+	struct tb_cell* unm = str_cell(buf->uname);
+
+	if (dgn_catch())
+	{
+		dgn_reset();
+	}
+	else
+	{
+		tb_blit(0, 0, strlen(buf->uname), 1, unm);
+		free(unm);
+	}
+
 	struct tb_cell* f1 = str_cell(lang.f1);
 
 	if (dgn_catch())
@@ -281,7 +294,7 @@ void draw_f_commands()
 	}
 	else
 	{
-		tb_blit(0, 0, strlen(lang.f1), 1, f1);
+		tb_blit(buf->width - strlen(lang.f1), 0, strlen(lang.f1), 1, f1);
 		free(f1);
 	}
 
@@ -293,7 +306,7 @@ void draw_f_commands()
 	}
 	else
 	{
-		tb_blit(strlen(lang.f1) + 1, 0, strlen(lang.f2), 1, f2);
+		tb_blit(buf->width - strlen(lang.f1) - strlen(lang.f2) - 1, 0, strlen(lang.f2), 1, f2);
 		free(f2);
 	}
 }
@@ -374,14 +387,14 @@ void draw_desktop(struct desktop* target)
 	tb_change_cell(
 		target->x,
 		target->y,
-		'<',
+		'-',
 		config.fg,
 		config.bg);
 
 	tb_change_cell(
 		target->x + target->visible_len - 1,
 		target->y,
-		'>',
+		'-',
 		config.fg,
 		config.bg);
 
@@ -429,7 +442,7 @@ void draw_input(struct text* input)
 	}
 }
 
-void draw_input_mask(struct text* input)
+void draw_input_mask(struct text* input, struct term_buf* buf)
 {
 	uint16_t len = strlen(input->text);
 	uint16_t visible_len = input->visible_len;
@@ -439,8 +452,16 @@ void draw_input_mask(struct text* input)
 		len = visible_len;
 	}
 
-	struct tb_cell c1 = {config.asterisk, config.fg, config.bg};
-	struct tb_cell c2 = {' ', config.fg, config.bg};
+	struct tb_cell c1 = {'#', config.fg, config.bg};
+	struct tb_cell c2 = {'.', 9, config.bg};
+
+	struct tb_cell lb = {'[', config.fg, config.bg};
+	struct tb_cell rb = {']', config.fg, config.bg};
+
+	tb_put_cell(
+		input->x - 1,
+		input->y,
+		&lb);
 
 	for (uint16_t i = 0; i < visible_len; ++i)
 	{
@@ -459,6 +480,11 @@ void draw_input_mask(struct text* input)
 				&c2);
 		}
 	}
+
+	tb_put_cell(
+		buf->box_x + buf->box_width - 2,
+		input->y,
+		&rb);
 }
 
 void position_input(

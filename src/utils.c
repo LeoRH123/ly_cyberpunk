@@ -12,6 +12,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <sys/utsname.h>
 
 #if defined(__DragonFly__) || defined(__FreeBSD__)
 	#include <sys/consio.h>
@@ -183,6 +184,39 @@ void hostname(char** out)
 void free_hostname()
 {
 	free(hostname_backup);
+}
+
+static char* uname_backup = NULL;
+
+void get_uname(char** out)
+{
+	if (uname_backup != NULL)
+	{
+		*out = uname_backup;
+		return;
+	}
+
+	struct utsname un;
+
+	if (uname(&un) < 0)
+	{
+		*out = "  ";
+		return;
+	}
+
+	int maxlen = strlen(un.sysname) + strlen(un.nodename) + strlen(un.release) + 
+		strlen(un.version) + strlen(un.machine) + 4;
+
+	uname_backup = malloc(maxlen + 1);
+
+	sprintf(uname_backup, "%s %s %s %s %s", un.sysname, un.nodename, un.release, un.version, un.machine);
+
+	*out = uname_backup;
+}
+
+void free_uname()
+{
+	free(uname_backup);
 }
 
 void switch_tty(struct term_buf* buf)

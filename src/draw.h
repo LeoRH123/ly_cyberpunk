@@ -53,6 +53,7 @@ struct term_buf
 
 	struct box box_chars;
 	char* info_line;
+	char* uname;
 	uint16_t labels_max_len;
 	uint16_t box_x;
 	uint16_t box_y;
@@ -74,7 +75,7 @@ void draw_f_commands();
 void draw_lock_state(struct term_buf* buf);
 void draw_desktop(struct desktop* target);
 void draw_input(struct text* input);
-void draw_input_mask(struct text* input);
+void draw_input_mask(struct text* input, struct term_buf* buf);
 
 void position_input(
 	struct term_buf* buf,
