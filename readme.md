@@ -4,6 +4,10 @@
 
 Ly is a lightweight TUI (ncurses-like) display manager for Linux and BSD.
 
+## Changes
+
+This fork features a different UI (see the screenshot)
+
 ## Dependencies
  - a C99 compiler (tested with tcc and gcc)
  - a C standard library
@@ -56,7 +60,7 @@ changing the source code won't be necessary :)
 ## Cloning and Compiling
 Clone the repository
 ```
-$ git clone --recurse-submodules https://github.com/fairyglade/ly
+$ git clone --recurse-submodules https://github.com/enaix/ly_cyberpunk
 ```
 
 Change the directory to ly
