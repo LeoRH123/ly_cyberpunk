@@ -63,9 +63,9 @@ Clone the repository
 $ git clone --recurse-submodules https://github.com/enaix/ly_cyberpunk
 ```
 
-Change the directory to ly
+Change the directory to ly_cyberpunk
 ```
-$ cd ly
+$ cd ly_cyberpunk
 ```
 
 Compile
@@ -137,10 +137,7 @@ If you are running on `tty2` (check your `/etc/ly/config.ini`) you can disable e
 ```
 
 ## Arch Linux Installation
-You can install ly from the [AUR](https://aur.archlinux.org/packages/ly), using yay for example:
-``` 
-$ yay -S ly
-```
+There is currently no ly_cyberpunk AUR package
 
 ## Configuration
 You can find all the configuration in `/etc/ly/config.ini`.
