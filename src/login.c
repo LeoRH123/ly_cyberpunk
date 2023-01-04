@@ -259,8 +259,8 @@ void env_xdg_session(const enum display_server display_server)
 
 void env_xdg(const char* tty_id, const char* desktop_name)
 {
-    char user[15];
-    snprintf(user, 15, "/run/user/%d", getuid());
+    char user[20];
+    snprintf(user, 20, "/run/user/%d", getuid());
     setenv("XDG_RUNTIME_DIR", user, 0);
     setenv("XDG_SESSION_CLASS", "user", 0);
     setenv("XDG_SESSION_ID", "1", 0);
@@ -618,8 +618,11 @@ void auth(
 		char vt[5];
 		snprintf(vt, 5, "vt%d", config.tty);
 
-		// set env
+		// set env (this clears the environment)
 		env_init(pwd);
+		// Re-add XDG environment variables from lines 508,509
+		env_xdg_session(desktop->display_server[desktop->cur]);
+		env_xdg(tty_id, desktop->list_simple[desktop->cur]);
 
 		if (dgn_catch())
 		{
